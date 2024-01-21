@@ -8,6 +8,7 @@ import "./music-menu.css";
 
 function MusicMenu({ tracks }) {
   const [selectedList, setSelectedList] = useState();
+  const [selectedFilter, setSelectedFilter] = useState();
 
   // Lists used for filtering
   const lists = {
@@ -31,10 +32,14 @@ function MusicMenu({ tracks }) {
     }
   }
 
-
   // Select a list to display songs grouped by artist, album or genre
   function selectList(list) {
     setSelectedList(list);
+  }
+
+  // Select the exact artist, album or genre to display the related songs
+  function selectFilter(filter) {
+    setSelectedFilter(filter);
   }
 
   return (
@@ -71,7 +76,11 @@ function MusicMenu({ tracks }) {
         {selectedList
           ? lists[selectedList].map((item, index) => {
               return (
-                <li className="menu-item" key={index}>
+                <li
+                  className="menu-item"
+                  key={index}
+                  onClick={() => selectFilter(item)}
+                >
                   {item}
                   <ArrowRight />
                 </li>
@@ -86,9 +95,21 @@ function MusicMenu({ tracks }) {
             })}
       </ul>
       <ul className="layer third-layer">
-        <li className="menu-item">
+        <li className="menu-item" onClick={() => selectFilter(null)}>
           <ArrowLeft />
         </li>
+        {selectedFilter &&
+          tracks
+            .filter((track) => {
+              return selectedFilter === track[selectedList];
+            })
+            .map((item, index) => {
+              return (
+                <li className="menu-item" key={index}>
+                  {item.title}
+                </li>
+              );
+            })}
       </ul>
     </div>
   );

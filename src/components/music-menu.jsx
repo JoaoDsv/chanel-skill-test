@@ -9,6 +9,29 @@ import "./music-menu.css";
 function MusicMenu({ tracks }) {
   const [selectedList, setSelectedList] = useState();
 
+  // Lists used for filtering
+  const lists = {
+    artist: [],
+    album: [],
+    genre: [],
+  };
+
+  // Build dynamic lists from tracks data
+  // Time complexity: O(n) linear
+  // Space complexity: O(1) constant
+  for (let i = 0; i < tracks.length; i++) {
+    if (!lists.artist.includes(tracks[i].artist)) {
+      lists.artist.push(tracks[i].artist);
+    }
+    if (!lists.album.includes(tracks[i].album)) {
+      lists.album.push(tracks[i].album);
+    }
+    if (!lists.genre.includes(tracks[i].genre)) {
+      lists.genre.push(tracks[i].genre);
+    }
+  }
+
+
   // Select a list to display songs grouped by artist, album or genre
   function selectList(list) {
     setSelectedList(list);
@@ -22,6 +45,24 @@ function MusicMenu({ tracks }) {
           Songs
           <ArrowRight />
         </li>
+        {lists.artist.length > 0 && (
+          <li className="menu-item" onClick={() => selectList("artist")}>
+            Artists
+            <ArrowRight />
+          </li>
+        )}
+        {lists.album.length > 0 && (
+          <li className="menu-item" onClick={() => selectList("album")}>
+            Albums
+            <ArrowRight />
+          </li>
+        )}
+        {lists.genre.length > 0 && (
+          <li className="menu-item" onClick={() => selectList("genre")}>
+            Genres
+            <ArrowRight />
+          </li>
+        )}
       </ul>
       <ul className="layer second-layer">
         <li className="menu-item" onClick={() => selectList(null)}>

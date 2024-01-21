@@ -32,19 +32,63 @@ function MusicMenu({ tracks }) {
     }
   }
 
+  // DOM refs to animate layers
+  const wrapperRef = useRef(null);
+  const firstLayerRef = useRef(null);
+  const secondLayerRef = useRef(null);
+  const thirdLayerRef = useRef(null);
+
   // Select a list to display songs grouped by artist, album or genre
-  function selectList(list) {
+  function selectList(list, transition = "right") {
     setSelectedList(list);
+
+    // Animate layers transition
+    if (transition === "right") {
+      firstLayerRef.current.style.left = "-400px";
+      secondLayerRef.current.style.left = "0px";
+      thirdLayerRef.current.style.left = "400px";
+
+      setTimeout(() => {
+        wrapperRef.current.style.height = `${secondLayerRef.current.offsetHeight}px`;
+      }, 200);
+    } else {
+      firstLayerRef.current.style.left = "0px";
+      secondLayerRef.current.style.left = "400px";
+      thirdLayerRef.current.style.left = "800px";
+
+      setTimeout(() => {
+        wrapperRef.current.style.height = `${firstLayerRef.current.offsetHeight}px`;
+      }, 200);
+    }
   }
 
   // Select the exact artist, album or genre to display the related songs
-  function selectFilter(filter) {
+  function selectFilter(filter, transition = "right") {
     setSelectedFilter(filter);
+
+    // Animate layers transition
+    if (transition === "right") {
+      firstLayerRef.current.style.left = "-800px";
+      secondLayerRef.current.style.left = "-400px";
+      thirdLayerRef.current.style.left = "0px";
+
+      setTimeout(() => {
+        wrapperRef.current.style.height = `${thirdLayerRef.current.offsetHeight}px`;
+      }, 200);
+    } else {
+      firstLayerRef.current.style.left = "-400px";
+      secondLayerRef.current.style.left = "0px";
+      thirdLayerRef.current.style.left = "400px";
+
+      setTimeout(() => {
+        wrapperRef.current.style.height = `${secondLayerRef.current.offsetHeight}px`;
+      }, 200);
+    }
   }
 
   return (
-    <div className="music-menu-wrapper">
-      <ul className="layer first-layer">
+    <div className="music-menu-wrapper" ref={wrapperRef}>
+      <ul className="layer first-layer" ref={firstLayerRef}>
         <li className="menu-item">Music menu</li>
         <li className="menu-item" onClick={() => selectList(null)}>
           Songs
@@ -69,8 +113,8 @@ function MusicMenu({ tracks }) {
           </li>
         )}
       </ul>
-      <ul className="layer second-layer">
-        <li className="menu-item" onClick={() => selectList(null)}>
+      <ul className="layer second-layer" ref={secondLayerRef}>
+        <li className="menu-item" onClick={() => selectList(null, "left")}>
           <ArrowLeft />
         </li>
         {selectedList
@@ -94,8 +138,8 @@ function MusicMenu({ tracks }) {
               );
             })}
       </ul>
-      <ul className="layer third-layer">
-        <li className="menu-item" onClick={() => selectFilter(null)}>
+      <ul className="layer third-layer" ref={thirdLayerRef}>
+        <li className="menu-item" onClick={() => selectFilter(null, "left")}>
           <ArrowLeft />
         </li>
         {selectedFilter &&
